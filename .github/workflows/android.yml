@@ -27,6 +27,8 @@ jobs:
       - name: Create debug keystore
         run: |
           keytool -genkeypair -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+      - name: Configure Godot Android SDK and signing
+        run: godot --headless --path . --editor --script res://ci/configure_android.gd
       - name: Validate Godot project
         run: godot --headless --path . --editor --quit
       - name: Export APK
@@ -36,7 +38,7 @@ jobs:
           GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD: android
         run: |
           mkdir -p build
-          godot --headless --path . --export-debug "Android" build/BottomEmpire-debug.apk
+          godot --headless --path . --verbose --export-debug "Android" build/BottomEmpire-debug.apk
           test -s build/BottomEmpire-debug.apk
       - uses: actions/upload-artifact@v4
         with:
